@@ -1,4 +1,5 @@
-/// <reference path="multiplayer.ts" />
+/// <reference path="../multiplayer-lib/client-references.ts" />
+/// <reference path="game-references.ts" />
 
 var gameState:{[key: string]: any} = {
   unit1: [0, 0],

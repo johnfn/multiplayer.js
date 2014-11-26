@@ -1,5 +1,11 @@
 # multiplayer.js
 
+## how2run
+
+    tsc --watch src/*.ts multiplayer-lib/*.ts
+
+
+
 "omg making a multiplayer game is so hard johnfn"
 
 NOT ANY MORE
