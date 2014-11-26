@@ -22,8 +22,6 @@ class MultiplayerClient {
     this.initializeGameState();
 
     this.socket.on('update', (data) => this.sendUpdateToServer());
-
-    // setInterval(() => this.gameLoop(), 100);
   }
 
   // The server is demanding an update from us
@@ -65,42 +63,40 @@ class MultiplayerServer {
   smallestUnusedID:number = 0;
 
   constructor(io:any, update:(state:GameState, input:Input) => GameState) {
-    var self:MultiplayerServer = this;
-
     this.io = io;
     this.update = update;
 
     setInterval(() => this.gameLoop(), 100);
 
-    io.on('connection', function(socket) {
-      var connection:Connection = {
-        socket: socket,
-        id: self.getUniqueID(),
-        storedData: {}
-      };
+    io.on('connection', (socket) => {
+      var connection:Connection = { socket: socket, id: this.getUniqueID(), storedData: {} };
 
-      self.connections.push(connection);
-
-      socket.on('update-response', function(response) {
-        connection.storedData = response;
-      });
-
-      socket.on('disconnect', function() {
-        var index;
-
-        // find index of connection in list (can't store; it could have changed)
-
-        for (var i = 0; i < self.connections.length; i++) {
-          if (self.connections[i].id === connection.id) {
-            index = i;
-            break;
-          }
-        }
-
-        self.connections.splice(i, 1);
-      });
+      this.addConnection(connection);
 
       console.log('a user connected');
+    });
+  }
+
+  addConnection(connection:Connection) {
+    this.connections.push(connection);
+
+    connection.socket.on('update-response', (response) => {
+      connection.storedData = response;
+    });
+
+    connection.socket.on('disconnect', () => {
+      var index;
+
+      // find index of connection in list (can't store; it could have changed)
+
+      for (var i = 0; i < this.connections.length; i++) {
+        if (this.connections[i].id === connection.id) {
+          index = i;
+          break;
+        }
+      }
+
+      this.connections.splice(i, 1);
     });
   }
 
