@@ -1,36 +1,45 @@
+declare var io;
+
+interface GameState{[key: string]: any};
+
 interface Input {
   buttonsDown:number[];
 };
 
-// TODO need to typedef gamestate
-
 class MultiplayerClient {
-  gameState:{[key: string]: any} = {};
-  initialGameState:{[key: string]: any} = {};
+  gameState:GameState = {};
+  socket:any;
 
   constructor() {
+    this.socket = io();
     this.initializeGameState();
 
+    this.socket.on('update', (data) => this.serverUpdate(data));
+
     setInterval(() => this.gameLoop(), 100);
+  }
+
+  serverUpdate(data:{[key: string]: any}) {
+    this.gameState = data;
   }
 
   initializeGameState() {
     this.gameState = this.getInitialGameState();
   }
 
-  getInitialGameState():{[key: string]: any} {
+  getInitialGameState():GameState {
     throw new Error("needs to be overriden in subclass");
 
     return undefined;
   }
 
-  render(state: {[key: string]: any}) {
+  render(state: GameState) {
     throw new Error("needs to be overriden in subclass");
 
     return undefined;
   }
 
-  update(state: {[key: string]: any}, input:Input):{[key: string]: any} {
+  update(state: GameState, input:Input):GameState {
     throw new Error("needs to be overriden in subclass");
 
     return undefined;

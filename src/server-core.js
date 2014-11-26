@@ -10,11 +10,7 @@ app.set('view engine', 'jade');
 
 app.use(express.static(path.join(__dirname, '..')));
 
-app.get('/', function (req, res) {
-  console.log('!');
-
-  res.render('index');
-});
+app.get('/', function (req, res) { res.render('index'); });
 
 var server = http.listen(8000, function () {
   var host = server.address().address;
@@ -28,8 +24,9 @@ var gameState = {};
 io.on('connection', function(socket) {
   console.log('a user connected');
 
-  io.emit('map-generation', {
-    for: 'everyone'
+  io.emit('update', {
+    for: 'everyone',
+    data: 'nothing new'
   });
 
   socket.on('message', function(msg) {
