@@ -49,13 +49,18 @@ class MultiplayerClient {
   }
 }
 
+interface Connection {
+  socket:any;
+  id:number;
+  storedData:{[key: string]: string};
+}
+
 class MultiplayerServer {
   gameState:GameState = {};
   update: (state:GameState, input:Input) => GameState;
 
   io:any;
-  connections: any[] = [];
-  storedData: {[key: string]: string} = {};
+  connections: Connection[] = [];
 
   smallestUnusedID:number = 0;
 
@@ -68,12 +73,31 @@ class MultiplayerServer {
     setInterval(() => this.gameLoop(), 100);
 
     io.on('connection', function(socket) {
-      var id:number = self.getUniqueID();
+      var connection:Connection = {
+        socket: socket,
+        id: self.getUniqueID(),
+        storedData: {}
+      };
 
-      self.connections.push(socket);
+      self.connections.push(connection);
 
       socket.on('update-response', function(response) {
-        self.storedData[id] = response;
+        connection.storedData = response;
+      });
+
+      socket.on('disconnect', function() {
+        var index;
+
+        // find index of connection in list (can't store; it could have changed)
+
+        for (var i = 0; i < self.connections.length; i++) {
+          if (self.connections[i].id === connection.id) {
+            index = i;
+            break;
+          }
+        }
+
+        self.connections.splice(i, 1);
       });
 
       console.log('a user connected');
@@ -90,12 +114,13 @@ class MultiplayerServer {
 
   gameLoop() {
     for (var i = 0; i < this.connections.length; i++) {
-      this.connections[i].emit('update');
+      this.connections[i].socket.emit('update');
     }
 
-    for (var i = 0; i <= this.getHighestID(); i++) {
-      console.log("from id: " + i + " got: " + this.storedData[i]);
-      this.storedData[i] = undefined;
+    for (var i = 0; i < this.connections.length; i++) {
+      console.log('from socket ' + this.connections[i].id + ' got:: ' + this.connections[i].storedData);
+
+      this.connections[i].storedData = undefined;
     }
   }
 }
