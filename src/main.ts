@@ -10,16 +10,13 @@ class Client extends MultiplayerClient {
     };
   }
 
-  update(state:GameState, input:Input):GameState {
-    state['unit1'][0]++;
-
-    return state;
+  // TODO should be props, not fns
+  render(state:GameState) {
+    return X.render(state)
   }
 
-  render(state:GameState) {
-    for (var k in state) {
-      console.log(state[k]);
-    }
+  update(state:GameState, input:Input) {
+    return X.update(state, input);
   }
 }
 

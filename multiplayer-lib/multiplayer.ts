@@ -21,7 +21,7 @@ class MultiplayerClient {
   }
 
   serverUpdate(data:{[key: string]: any}) {
-    this.gameState = data;
+    // this.gameState = data;
   }
 
   initializeGameState() {
@@ -76,4 +76,6 @@ class MultiplayerServer {
   }
 }
 
-module.exports.MultiplayerServer = MultiplayerServer;
+if (typeof module !== 'undefined') {
+  module.exports.MultiplayerServer = MultiplayerServer;
+}
