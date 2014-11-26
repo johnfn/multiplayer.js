@@ -21,13 +21,14 @@ class MultiplayerClient {
     this.socket = io();
     this.initializeGameState();
 
-    // this.socket.on('update', (data) => this.serverUpdate(data));
+    this.socket.on('update', (data) => this.sendUpdateToServer());
 
     // setInterval(() => this.gameLoop(), 100);
   }
 
-  serverUpdate(data:{[key: string]: any}) {
-    // this.gameState = data;
+  // The server is demanding an update from us
+  sendUpdateToServer() {
+    this.socket.emit('update-response', 'wheeeee');
   }
 
   initializeGameState() {
@@ -94,6 +95,7 @@ class MultiplayerServer {
 
     for (var i = 0; i <= this.getHighestID(); i++) {
       console.log("from id: " + i + " got: " + this.storedData[i]);
+      this.storedData[i] = undefined;
     }
   }
 }
