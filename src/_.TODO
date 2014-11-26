@@ -1,3 +1,47 @@
+Ezmode:
+ ☐ Put button on index.html
+ ☐ Every time you click button, add something to array
+ ☐ Transmit btn click event along wire somehow (should indicate which player it is coming from)
+ ☐ Array updated serverside
+ ☐ Server forces clientside updates
+ ☐ There should also be unshared data
+   ☐ For UI panels, can just not even bother with syncing them.
+   ☐ What about stuff like fog of war?
+
+The problem is that the client does one calc. The server needs to run the calc for every player. Speaking generally, this should be turned into this ->
+
+CLIENT:
+
+function updateResource() {
+  this.resources ++;
+
+  this.visible = this.near('unit', curPlayer);
+}
+
+SERVER:
+
+  function updateResource() {
+    this.resources ++;
+
+    for (each player p) {
+      this.visible[p] = this.near('unit', curPlayer());
+    }
+  }
+
+  So I need something like this essentially
+
+  set visible(value) {
+    var __old_player = CUR_PLAYER;
+
+    for each player p {
+      CUR_PLAYER = p;
+      this.visible[p] = this.near('unit', curPlayer())
+    }
+
+    CUR_PLAYER = __old_player;
+  }
+
+
  ☐ the initialGameState should be a fn on the MultiplayerServer which the constructor of MultiplayerClient shuold pull down
  ☐ gamestate shoulf be a typedef
  ☐ When updates come back from the server that differ from the stuff we have on the client, we should recursively travel both state trees, find all the places that differ and update them nonintrusively.
