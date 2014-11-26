@@ -24,7 +24,7 @@ class MultiplayerClient {
     return undefined;
   }
 
-  render(state: {[key: string]: any}):{[key: string]: any} {
+  render(state: {[key: string]: any}) {
     throw new Error("needs to be overriden in subclass");
 
     return undefined;
