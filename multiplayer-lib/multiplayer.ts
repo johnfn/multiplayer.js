@@ -11,6 +11,9 @@ class MultiplayerClient {
   gameState:GameState = {};
   socket:any;
 
+  render:(state:GameState) => void = (state:GameState) => console.error("no render function!"); //TODO: how come can't throw???
+  update:(state:GameState, input:Input) => GameState = (state:GameState, input:Input) => { console.error("no render function!"); return undefined; }
+
   constructor() {
     this.socket = io();
     this.initializeGameState();
@@ -29,18 +32,6 @@ class MultiplayerClient {
   }
 
   getInitialGameState():GameState {
-    throw new Error("needs to be overriden in subclass");
-
-    return undefined;
-  }
-
-  render(state: GameState) {
-    throw new Error("needs to be overriden in subclass");
-
-    return undefined;
-  }
-
-  update(state: GameState, input:Input):GameState {
     throw new Error("needs to be overriden in subclass");
 
     return undefined;
