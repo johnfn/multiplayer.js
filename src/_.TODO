@@ -1,0 +1,2 @@
+ ☐ the initialGameState should be a fn on the MultiplayerServer which the constructor of MultiplayerClient shuold pull down
+ ☐ gamestate shoulf be a typedef
