@@ -1,4 +1,5 @@
 declare var io;
+declare var module;
 
 interface GameState{[key: string]: any};
 
@@ -52,3 +53,27 @@ class MultiplayerClient {
     this.render(this.gameState);
   }
 }
+
+class MultiplayerServer {
+  gameState:GameState = {};
+  io:any;
+
+  constructor(io:any) {
+    this.io = io;
+
+    io.on('connection', function(socket) {
+      console.log('a user connected');
+
+      io.emit('update', {
+        for: 'everyone',
+        data: 'nothing new'
+      });
+
+      socket.on('message', function(msg) {
+        console.log("message received:", msg);
+      });
+    });
+  }
+}
+
+module.exports.MultiplayerServer = MultiplayerServer;
