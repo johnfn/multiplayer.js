@@ -11,10 +11,13 @@ class MultiplayerClient {
   gameState:GameState = {};
   socket:any;
 
-  render:(state:GameState) => void = (state:GameState) => console.error("no render function!"); //TODO: how come can't throw???
-  update:(state:GameState, input:Input) => GameState = (state:GameState, input:Input) => { console.error("no render function!"); return undefined; }
+  render:(state:GameState) => void
+  update:(state:GameState, input:Input) => GameState;
 
   constructor() {
+    if (!this.render) this.render = (state:GameState) => console.error("no render function!"); //TODO: how come can't throw???
+    if (!this.update) this.update = (state:GameState, input:Input) => { console.error("no render function!"); return undefined; }
+
     this.socket = io();
     this.initializeGameState();
 
