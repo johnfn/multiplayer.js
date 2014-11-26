@@ -19,3 +19,7 @@ var X:MultiplayerBasics = {
     return state;
   }
 };
+
+if (typeof module !== 'undefined') {
+  module.exports.X = X;
+}

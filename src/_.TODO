@@ -5,3 +5,4 @@
    ☐ If a unit that you thought was alive is now dead, play its death animation.
    ☐ I think all this stuff can be done super non-intrusively w/ setters.
  ☐ Obviously, when you send objs over the wire, you dont want to send along stuff like functions. They will never be equal and will only cause heartache. The sender fn should recursively trawl the state hierarchy to remove cruft.
+ ☐ Server needs to send out update msgs

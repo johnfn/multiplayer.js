@@ -21,9 +21,9 @@ class MultiplayerClient {
     this.socket = io();
     this.initializeGameState();
 
-    this.socket.on('update', (data) => this.serverUpdate(data));
+    // this.socket.on('update', (data) => this.serverUpdate(data));
 
-    setInterval(() => this.gameLoop(), 100);
+    // setInterval(() => this.gameLoop(), 100);
   }
 
   serverUpdate(data:{[key: string]: any}) {
@@ -50,23 +50,51 @@ class MultiplayerClient {
 
 class MultiplayerServer {
   gameState:GameState = {};
-  io:any;
+  update: (state:GameState, input:Input) => GameState;
 
-  constructor(io:any) {
+  io:any;
+  connections: any[] = [];
+  storedData: {[key: string]: string} = {};
+
+  smallestUnusedID:number = 0;
+
+  constructor(io:any, update:(state:GameState, input:Input) => GameState) {
+    var self:MultiplayerServer = this;
+
     this.io = io;
+    this.update = update;
+
+    setInterval(() => this.gameLoop(), 100);
 
     io.on('connection', function(socket) {
+      var id:number = self.getUniqueID();
+
+      self.connections.push(socket);
+
+      socket.on('update-response', function(response) {
+        self.storedData[id] = response;
+      });
+
       console.log('a user connected');
-
-      io.emit('update', {
-        for: 'everyone',
-        data: 'nothing new'
-      });
-
-      socket.on('message', function(msg) {
-        console.log("message received:", msg);
-      });
     });
+  }
+
+  getUniqueID():number {
+    return this.smallestUnusedID++;
+  }
+
+  getHighestID():number {
+    return this.smallestUnusedID - 1;
+  }
+
+  gameLoop() {
+    for (var i = 0; i < this.connections.length; i++) {
+      this.connections[i].emit('update');
+    }
+
+    for (var i = 0; i <= this.getHighestID(); i++) {
+      console.log("from id: " + i + " got: " + this.storedData[i]);
+    }
   }
 }
 
