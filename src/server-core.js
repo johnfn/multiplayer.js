@@ -23,6 +23,8 @@ var server = http.listen(8000, function () {
   console.log('Running game at http://%s:%s', host, port)
 });
 
+var gameState = {};
+
 io.on('connection', function(socket) {
   console.log('a user connected');
 
