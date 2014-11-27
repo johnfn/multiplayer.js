@@ -5,11 +5,13 @@ interface GameState{[key: string]: any};
 
 interface Input {
   buttonsDown:number[];
+  eventNames:string[];
 };
 
 class MultiplayerClient {
   gameState:GameState = {};
   socket:any;
+  inputEvents:Input = {buttonsDown: [], eventNames: []};
 
   render:(state:GameState) => void
   update:(state:GameState, input:Input) => GameState;
@@ -29,6 +31,10 @@ class MultiplayerClient {
     this.socket.emit('update-response', 'wheeeee');
   }
 
+  trigger(name:string) {
+    this.inputEvents.eventNames.push(name);
+  }
+
   initializeGameState() {
     this.gameState = this.getInitialGameState();
   }
@@ -41,7 +47,7 @@ class MultiplayerClient {
 
   gameLoop() {
     // TODO: need to do _.clone(gameState)
-    this.gameState = this.update(this.gameState, { buttonsDown: [65] });
+    this.gameState = this.update(this.gameState, { buttonsDown: [65], eventNames: [] });
 
     this.render(this.gameState);
   }

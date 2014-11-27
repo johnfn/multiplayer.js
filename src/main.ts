@@ -18,4 +18,8 @@ class Client extends MultiplayerClient {
   }
 }
 
-new Client();
+var client:Client = new Client();
+
+$('.addone').on('click', function() {
+
+})
