@@ -23,3 +23,13 @@ First, you need to split up your game logic like this:
 Every tick it'll call that function, and it expects to receive back the updated data object. For example, if the data object is a unit and an enemy unit facing each other, and the event indicates that your unit should attack the enemy unit, then you should return an updated data object indicating your enemy is switching animations to the attack animation, that the enemy took damage, and so on.
 
 3. A way to render. But I need to figure this out still... ugh
+
+Sometimes, you want to have variables that are specific to just one player. In that case, do something like this:
+
+    privateVariables = ['visible'];
+    
+    function update() { 
+        this.visible = this.near('unit', curPlayer);
+    }
+    
+This makes some magic happen on the server. 
