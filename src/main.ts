@@ -21,5 +21,5 @@ class Client extends MultiplayerClient {
 var client:Client = new Client();
 
 $('.addone').on('click', function() {
-
+  client.trigger('clickbutton1');
 })

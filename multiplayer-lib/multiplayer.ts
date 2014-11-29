@@ -28,7 +28,11 @@ class MultiplayerClient {
 
   // The server is demanding an update from us
   sendUpdateToServer() {
-    this.socket.emit('update-response', 'wheeeee');
+    this.socket.emit('update-response', JSON.stringify(this.inputEvents));
+
+    // clear out events
+    this.inputEvents.buttonsDown = [];
+    this.inputEvents.eventNames = [];
   }
 
   trigger(name:string) {
@@ -43,13 +47,6 @@ class MultiplayerClient {
     throw new Error("needs to be overriden in subclass");
 
     return undefined;
-  }
-
-  gameLoop() {
-    // TODO: need to do _.clone(gameState)
-    this.gameState = this.update(this.gameState, { buttonsDown: [65], eventNames: [] });
-
-    this.render(this.gameState);
   }
 }
 
@@ -87,7 +84,8 @@ class MultiplayerServer {
     this.connections.push(connection);
 
     connection.socket.on('update-response', (response) => {
-      connection.storedData = response;
+      console.log(response);
+      connection.storedData = JSON.parse(response);
     });
 
     connection.socket.on('disconnect', () => {
@@ -120,7 +118,9 @@ class MultiplayerServer {
     }
 
     for (var i = 0; i < this.connections.length; i++) {
-      console.log('from socket ' + this.connections[i].id + ' got:: ' + this.connections[i].storedData);
+      var data = (this.connections[i].storedData);
+
+      console.log('from socket ' + this.connections[i].id + ' got:: ' + data);
 
       this.connections[i].storedData = undefined;
     }
