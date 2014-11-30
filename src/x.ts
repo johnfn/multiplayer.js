@@ -14,7 +14,9 @@ var X:MultiplayerBasics = {
   },
 
   update(state:GameState, input:Input):GameState {
-    state['unit1'][0]++;
+    this.on(input, 'clickbutton1', function() {
+      state['unit1'][0]++;
+    });
 
     return state;
   }
